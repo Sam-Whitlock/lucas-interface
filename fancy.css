@@ -21,24 +21,28 @@ section
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #fff7f7;
-}
-.section2{
-
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    font-size: 100px;
-    color: black;
+    background: #ffffff;
 }
 header
 {
     position: absolute;
-    top: 70;
-    left: 0;
+    top: 0px;
+    left: 0px;
     width: 100%;
     padding: 40px 100px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+a
+{
+    position: absolute;
+    font-size: 50px;
+    left: 900px;
+}
+main
+{
+    position: absolute;
+    font-size: 30px;
+    color: black;
 }
