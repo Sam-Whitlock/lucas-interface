@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RockerBogie Interface</title>
+    <script type="text/javascript" src="http://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+    <script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
+    <script src="Java.js"></script>
+</head>
+<body>
+    Hello ;)
+    <script type="text/javascript" type="text/javascript">
+        window.addEventListener("gamepadconnected", function(e) {
+    console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
+      e.gamepad.index, e.gamepad.id,
+      e.gamepad.buttons.length, e.gamepad.axes.length);
+  });
+
+  window.addEventListener("gamepaddisconnected", function(e) {
+    console.log("Gamepad disconnected from index %d: %s",
+      e.gamepad.index, e.gamepad.id);
+  });
+
+  var ros = new ROSLIB.Ros({
+    url : 'ws://localhost:9090'
+  });
+
+  ros.on('connection', function() {
+    console.log('Connected to websocket server.');
+  });
+
+  ros.on('error', function(error) {
+    console.log('Error connecting to websocket server: ', error);
+  });
+
+  ros.on('close', function() {
+    console.log('Connection to websocket server closed.');
+  });
+
+setTimeout(() => {
+    setInterval(() => {
+    let gamepad = navigator.getGamepads();
+    let seq = 0;
+    let driving = {
+        "header": {
+        "seq": seq++,
+        },
+        "nsecs": performance.now(),
+        "secs": Date.now(),
+        "axes": {
+          0: gamepad[0].axes[0],
+          1: gamepad[0].axes[1],
+          2: gamepad[0].axes[2],
+          3: gamepad[0].axes[3],
+        },
+        "buttons": {
+          1: gamepad[0].buttons[1],
+          2: gamepad[0].buttons[2],
+          8: gamepad[0].buttons[8],
+          9: gamepad[0].buttons[9],
+          16: gamepad[0].buttons[16],
+        }
+    }
+    console.log(driving)
+   }, 20);
+}, 10000);
+
+let controller = new ROSLIB.topic({
+    ros : ros,
+    name : '/controller',
+    messageType : 'sensor_msgs/joy'
+})
+let joy = new ROSLIB.message({
+        "header": {
+        "seq": seq++,
+        },
+        "stamp": {
+        "nsecs": performance.now(),
+        "secs": Date.now(),
+        },
+        "frame_id": "/dev/input/js0",
+        "axes": {
+          0: gamepad[0].axes[0],
+          1: gamepad[0].axes[1],
+          2: gamepad[0].axes[2],
+          3: gamepad[0].axes[3],
+        },
+        "buttons": {
+          1: gamepad[0].buttons[1],
+          2: gamepad[0].buttons[2],
+          8: gamepad[0].buttons[8],
+          9: gamepad[0].buttons[9],
+          16: gamepad[0].buttons[16],
+        }
+    })
+controller.publish(joy);
+    </script>
+</body>
+</html>
